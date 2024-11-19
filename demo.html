@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phishing Awareness</title>
+  <style>
+    /* General Styling */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      overflow: hidden; /* Prevents scrolling */
+      background: black;
+      color: white;
+    }
+
+    /* Fullscreen GIF Container */
+    .background-gif {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url('explosion-12681.gif') center/cover no-repeat;
+      animation: fadeOut 2s ease-in forwards;
+      z-index: 1;
+    }
+
+    /* Fade out effect for GIF */
+    @keyframes fadeOut {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    /* Main Content */
+    .content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      opacity: 0; /* Initially hidden */
+      animation: fadeIn 2s ease-in forwards;
+      animation-delay: 2s; /* Starts after the GIF animation */
+    }
+
+    /* Fade in effect for Content */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Instruction Box */
+    .instruction-box {
+      position: absolute;
+      display: inline-block;
+      padding: 20px;
+      border-radius: 15px;
+      background: rgba(255, 0, 0, 0.1);
+      border: 2px solid #4b0202;
+      font-size: 1.5rem;
+      text-align: center;
+      color: white;
+      opacity: 0; /* Initially hidden */
+      animation-timing-function: ease-in-out;
+      animation-fill-mode: forwards; /* Ensures the final state is preserved */
+    }
+
+    /* Animations for Instructions */
+    .instruction-1 {
+      animation: leftToCenter 6s ease-in-out 2s forwards;
+    }
+
+    .instruction-2 {
+      animation: rightToCenter 6s ease-in-out 6s forwards;
+    }
+
+    .instruction-3 {
+      animation: leftToCenter 6s ease-in-out 10s forwards;
+    }
+
+    .instruction-4 {
+        animation: rightToCenter 6s ease-in-out 14s forwards;
+    }
+
+    /* Left-to-Center Movement */
+    @keyframes leftToCenter {
+      0% {
+        transform: translateX(-100vw);
+        opacity: 0;
+      }
+      40% {
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(100vw);
+        opacity: 0;
+      }
+    }
+
+    /* Right-to-Center Movement */
+    @keyframes rightToCenter {
+      0% {
+        transform: translateX(100vw);
+        opacity: 0;
+      }
+      40% {
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(-100vw);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Bomb Reveal GIF -->
+  <div class="background-gif"></div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <div class="instruction-box instruction-1">
+        Verify Sender: Check email addresses for errors or odd domains
+    </div>
+    <div class="instruction-box instruction-2">
+        Hover Links: Preview links before clicking.
+    </div>
+    <div class="instruction-box instruction-3">
+        Spot Urgency: Avoid rushed decisions; verify first.
+    </div>
+    <div class="instruction-box instruction-4">
+        Avoid Opening Attachments: Open files only from trusted sources
+    </div>
+  </div>
+</body>
+</html>
