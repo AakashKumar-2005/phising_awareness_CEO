@@ -23,53 +23,44 @@
       width: 100vw;
       height: 100vh;
       background: url('explosion-12681.gif') center/cover no-repeat;
-      animation: fadeOut 2s ease-in forwards;
       z-index: 1;
+      animation: changeBackground 3s ease-in forwards;
     }
 
-    /* Fade out effect for GIF */
-    @keyframes fadeOut {
+    /* Background transition to fire GIF */
+    @keyframes changeBackground {
       0% {
-        opacity: 1;
+        background: url('explosion-12681.gif') center/cover no-repeat;
       }
       100% {
-        opacity: 0;
+        background: url('fire3.gif') center/cover no-repeat;
       }
     }
 
     /* Main Content */
     .content {
-      position: relative;
+      position: absolute;
+      top: 0;
+      left: 50%;
       z-index: 2;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       height: 100vh;
-      opacity: 0; /* Initially hidden */
-      animation: fadeIn 2s ease-in forwards;
-      animation-delay: 2s; /* Starts after the GIF animation */
-    }
-
-    /* Fade in effect for Content */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
+      padding-top: 5%; /* Start instructions a little below the top */
+      transform: translateX(-50%); /* Ensures content is centered horizontally */
     }
 
     /* Instruction Box */
     .instruction-box {
-      position: absolute;
       display: inline-block;
+      margin: 10px 0; /* Space between instructions */
       padding: 20px;
       border-radius: 15px;
       background: rgba(255, 0, 0, 0.1);
       border: 2px solid #4b0202;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       text-align: center;
       color: white;
       opacity: 0; /* Initially hidden */
@@ -79,69 +70,68 @@
 
     /* Animations for Instructions */
     .instruction-0 {
-        animation: rightToCenter 6s ease-in-out 0.5s forwards ;
-        border: 4px solid #270101;
-        color: rgb(78, 0, 0);
-        background-color: #8a0000;
+      animation: moveFromTopToCenterAndFadeOut 4s ease-in-out 3s forwards;
+      border: 4px solid #030303;
+      color: rgb(255, 255, 255);
+      background-color: #044d13fa;
     }
 
     .instruction-1 {
-      animation: leftToCenter 6s ease-in-out 6s forwards;
+      animation: moveFromTopToCenter 2s ease-in-out 6s forwards;
+      background: #bb5406;
+      color: aliceblue;
     }
 
     .instruction-2 {
-      animation: rightToCenter 6s ease-in-out 10s forwards;
+      animation: moveFromTopToCenter 2s ease-in-out 8s forwards;
+      background:#bb5406;
+      color: aliceblue;
     }
 
     .instruction-3 {
-      animation: leftToCenter 6s ease-in-out 14s forwards;
+      animation: moveFromTopToCenter 2s ease-in-out 10s forwards;
+      background: #bb5406;
+      color: aliceblue;
     }
 
     .instruction-4 {
-        animation: rightToCenter 6s ease-in-out 18s forwards;
+      animation: moveFromTopToCenter 2s ease-in-out 12s forwards;
+      background: #bb5406;
+      color: aliceblue;
     }
 
-    /* Left-to-Center Movement */
-    @keyframes leftToCenter {
+    /* Move from top to center and fade in */
+    @keyframes moveFromTopToCenter {
       0% {
-        transform: translateX(-100vw);
+        transform: translateY(-50px); /* Start above the screen */
         opacity: 0;
       }
-      40% {
-        opacity: 1;
-      }
       50% {
-        transform: translateX(0);
-        opacity: 1;
-      }
-      90% {
+        transform: translateY(0); /* Move to center */
         opacity: 1;
       }
       100% {
-        transform: translateX(100vw);
-        opacity: 0;
+        transform: translateY(0); /* Stay in center */
+        opacity: 1;
       }
     }
 
-    /* Right-to-Center Movement */
-    @keyframes rightToCenter {
+    /* Move from top to center and fade out */
+    @keyframes moveFromTopToCenterAndFadeOut {
       0% {
-        transform: translateX(100vw);
+        transform: translateY(-50px); /* Start above the screen */
         opacity: 0;
-      }
-      40% {
-        opacity: 1;
       }
       50% {
-        transform: translateX(0);
+        transform: translateY(0); /* Move to center */
         opacity: 1;
       }
-      90% {
-        opacity: 1;
+      80% {
+        opacity: 1; /* Stay visible for a while */
       }
       100% {
-        transform: translateX(-100vw);
-        opacity: 0;
+        transform: translateY(0); /* Stay in center */
+        opacity: 0; /* Fade out */
       }
     }
   </style>
@@ -153,19 +143,19 @@
   <!-- Main Content -->
   <div class="content">
     <div class="instruction-box instruction-0">
-        BOOM!! THIS IS A PHISHING EMAIL
+      BOOM!! THIS IS A PHISHING EMAIL
     </div>
     <div class="instruction-box instruction-1">
-        Verify Sender: Check email addresses for errors or odd domains
+      Cross-verify requests with another senior official.
     </div>
     <div class="instruction-box instruction-2">
-        Hover Links: Preview links before clicking.
+      Confirm high-level requests through separate communication channel
     </div>
     <div class="instruction-box instruction-3">
-        Spot Urgency: Avoid rushed decisions; verify first.
+      Spot Urgency: Avoid rushed decisions; verify first.
     </div>
     <div class="instruction-box instruction-4">
-        Avoid Opening Attachments: Open files only from trusted sources
+      Check the sender’s email address carefully
     </div>
   </div>
 </body>
