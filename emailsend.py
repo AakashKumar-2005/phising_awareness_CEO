@@ -10,7 +10,7 @@ SENDER_EMAIL = 'yamini582006@gmail.com'
 SENDER_PASSWORD = 'qemg fgtb lxzz ixbg'
 
 # Base URL for phishing links (replace with your ngrok public URL)
-TRACKING_URL = 'https://366f-2409-40f4-a1-2b1-a56b-4473-904a-b4c9.ngrok-free.app/track-click?email='
+TRACKING_URL = 'https://8823-2409-40f4-f-59b2-f5a9-9769-e495-cb32.ngrok-free.app/track-click?email='
 
 # Read recipient list from CSV
 recipients = pd.read_csv('email_list.csv')
