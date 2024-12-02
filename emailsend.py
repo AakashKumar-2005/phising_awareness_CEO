@@ -9,8 +9,8 @@ SMTP_PORT = 587
 SENDER_EMAIL = 'yamini582006@gmail.com'
 SENDER_PASSWORD = 'qemg fgtb lxzz ixbg'
 
-# Base URL for phishing links (replace with local Flask server IP)
-TRACKING_URL = 'https://533b-2401-4900-2310-c68a-e9c3-692-8f67-3d91.ngrok-free.app/track-click?email='
+# Base URL for phishing links (replace with your ngrok public URL)
+TRACKING_URL = 'https://366f-2409-40f4-a1-2b1-a56b-4473-904a-b4c9.ngrok-free.app/track-click?email='
 
 # Read recipient list from CSV
 recipients = pd.read_csv('email_list.csv')
@@ -31,21 +31,27 @@ def send_emails():
             # Create the email content
             subject = "Exclusive Employee Benefits Program: Company Expansion Initiative"
             body = f"""
-            Dear Employee,
+            <html>
+            <body>
+                <p>Dear Employee,</p>
 
-            As a part of the company Outside India, We are excited to introduce an exclusive Employee Benefits Program. This initiative aims to enhance employee satisfaction and reward your contribution to TVS Mobility's success.
+                <p>As part of the company's expansion outside India, we are excited to introduce an exclusive Employee Benefits Program. 
+                This initiative aims to enhance employee satisfaction and reward your contribution to TVS Mobility's success.</p>
 
-            To enroll and activate your benefits, Please visit the following link:
-            {tracking_link}
+                <p>To enroll and activate your benefits, please click the link below:</p>
 
-            Enrollment is open until [Insert Deadline]. Don't miss this oppurtunity to be part of this exciting new initiative!
+                <p><a href="{tracking_link}" style="color: blue; text-decoration: underline;">Activate Your Benefits Here</a></p>
 
-            Thank you for your dedication and hard work.
+                <p>Enrollment is open until [Insert Deadline]. Don't miss this opportunity to be part of this exciting new initiative!</p>
 
-            Best regards,  
-            [CEO Name]  
-            Chief Executive Officer  
-            TVS Mobility
+                <p>Thank you for your dedication and hard work.</p>
+
+                <p>Best regards,<br>
+                [CEO Name]<br>
+                Chief Executive Officer<br>
+                TVS Mobility</p>
+            </body>
+            </html>
             """
 
             # Create the MIME message
@@ -53,7 +59,7 @@ def send_emails():
             msg['From'] = SENDER_EMAIL
             msg['To'] = recipient_email
             msg['Subject'] = subject
-            msg.attach(MIMEText(body, 'plain'))
+            msg.attach(MIMEText(body, 'html'))  # Send the email as HTML
 
             # Send the email
             server.send_message(msg)
@@ -66,10 +72,5 @@ def send_emails():
     except Exception as e:
         print(f"Error: {e}")
 
-
 # Send the emails
 send_emails()
-
-
-#python emailsend.py  command to run this ..
-# for tracking url , the command is " ngrok http 5000"
