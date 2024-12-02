@@ -26,7 +26,9 @@ def track_click():
     if email:
         update_csv(email, 'Seen the email and Opened it')
         # Redirect to phishing awareness page
-        return redirect("https://aakashkumar-2005.github.io/phising_awareness_CEO/")
+        response = redirect('https://aakashkumar-2005.github.io/phising_awareness_CEO/')
+        response.headers['ngrok-skip-browser-warning'] = 'true'
+        return response
     return "Invalid Request: Missing email parameter", 400
 
 
