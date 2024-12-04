@@ -10,7 +10,7 @@ SENDER_EMAIL = 'yamini582006@gmail.com'
 SENDER_PASSWORD = 'qemg fgtb lxzz ixbg'
 
 # Base URL for phishing links (replace with your ngrok public URL)
-TRACKING_URL = 'https://8823-2409-40f4-f-59b2-f5a9-9769-e495-cb32.ngrok-free.app/track-click?email='
+TRACKING_URL = 'https://a73c-2401-4900-2640-cbc2-7561-50e1-1476-bc04.ngrok-free.app/track-click?email='
 
 # Read recipient list from CSV
 recipients = pd.read_csv('email_list.csv')
@@ -24,9 +24,9 @@ def send_emails():
 
         # Loop through each recipient
         for _, row in recipients.iterrows():
-            redirecting = '&redirect=https://aakashkumar-2005.github.io/phising_awareness_CEO/'
+            skipwarning = '&ngrok-skip-browser-warning=true'
             recipient_email = row['Email']
-            tracking_link = TRACKING_URL + recipient_email + redirecting
+            tracking_link = TRACKING_URL + recipient_email + skipwarning
 
             # Create the email content
             subject = "Exclusive Employee Benefits Program: Company Expansion Initiative"
