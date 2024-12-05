@@ -1,7 +1,6 @@
 from flask import Flask, request, redirect, Response
 import csv
 import os
-import ngrok
 from threading import Lock
 
 app = Flask(__name__)
@@ -43,7 +42,12 @@ def track_view():
     if email:
         update_csv(email, 'Seen the email and Not Opened it')
         # Return a 1x1 transparent GIF
-        gif_data = b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\xFF\xFF\xFF\x21\xF9\x04\x01\x00\x00\x00\x00\x2C\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x4C\x01\x00\x3B'
+        gif_data = (
+            b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00'
+            b'\x00\x00\x00\xFF\xFF\xFF\x21\xF9\x04\x01\x00\x00\x00'
+            b'\x00\x2C\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02'
+            b'\x4C\x01\x00\x3B'
+        )
         return Response(gif_data, content_type='image/gif')
     return "Invalid Request: Missing email parameter", 400
 

@@ -9,8 +9,9 @@ SMTP_PORT = 587
 SENDER_EMAIL = 'yamini582006@gmail.com'
 SENDER_PASSWORD = 'qemg fgtb lxzz ixbg'
 
+
 # Base URL for phishing links (replace with your ngrok public URL)
-TRACKING_URL = 'https://a73c-2401-4900-2640-cbc2-7561-50e1-1476-bc04.ngrok-free.app/track-click?email='
+TRACKING_URL = 'https://ee57-2401-4900-3600-8292-254a-81d2-a969-e303.ngrok-free.app/track-click?email='
 
 # Read recipient list from CSV
 recipients = pd.read_csv('email_list.csv')
@@ -27,7 +28,6 @@ def send_emails():
             skipwarning = '&ngrok-skip-browser-warning=true'
             recipient_email = row['Email']
             tracking_link = TRACKING_URL + recipient_email + skipwarning
-
             # Create the email content
             subject = "Exclusive Employee Benefits Program: Company Expansion Initiative"
             body = f"""
@@ -41,7 +41,6 @@ def send_emails():
                 <p>To enroll and activate your benefits, please click the link below:</p>
 
                 <p><a href="{tracking_link}" style="color: blue; text-decoration: underline;">Activate Your Benefits Here</a></p>
-
                 <p>Enrollment is open until [Insert Deadline]. Don't miss this opportunity to be part of this exciting new initiative!</p>
 
                 <p>Thank you for your dedication and hard work.</p>
