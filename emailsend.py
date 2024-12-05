@@ -9,9 +9,8 @@ SMTP_PORT = 587
 SENDER_EMAIL = 'yamini582006@gmail.com'
 SENDER_PASSWORD = 'qemg fgtb lxzz ixbg'
 
-
 # Base URL for phishing links (replace with your ngrok public URL)
-TRACKING_URL = 'https://ee57-2401-4900-3600-8292-254a-81d2-a969-e303.ngrok-free.app/track-click?email='
+TRACKING_URL = 'https://af75-2405-201-e006-1075-f99e-7f9d-ccc2-cb66.ngrok-free.app/track-click?email='
 
 # Read recipient list from CSV
 recipients = pd.read_csv('email_list.csv')
@@ -25,15 +24,16 @@ def send_emails():
 
         # Loop through each recipient
         for _, row in recipients.iterrows():
-            skipwarning = '&ngrok-skip-browser-warning=true'
             recipient_email = row['Email']
-            tracking_link = TRACKING_URL + recipient_email + skipwarning
+            recipient_name = row['Name']  # Read the name from the CSV
+            tracking_link = TRACKING_URL + recipient_email
+
             # Create the email content
             subject = "Exclusive Employee Benefits Program: Company Expansion Initiative"
             body = f"""
             <html>
             <body>
-                <p>Dear Employee,</p>
+                <p>Dear {recipient_name},</p>
 
                 <p>As part of the company's expansion outside India, we are excited to introduce an exclusive Employee Benefits Program. 
                 This initiative aims to enhance employee satisfaction and reward your contribution to TVS Mobility's success.</p>
