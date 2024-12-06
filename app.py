@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, Response
+from flask import Flask, request, redirect, Response, render_template, send_file
 import csv
 import os
 from threading import Lock
@@ -10,6 +10,10 @@ CSV_FILE = 'email_list.csv'
 
 # Lock for file access
 file_lock = Lock()
+
+ADMIN_USERNAME = 'admin'
+ADMIN_PASSWORD = 'secure1'
+
 
 # Ensure the CSV file exists with headers
 if not os.path.exists(CSV_FILE):
@@ -80,6 +84,45 @@ def update_csv(email, status, name=None):
             writer = csv.DictWriter(file, fieldnames=['Email', 'Name', 'Status'])
             writer.writeheader()
             writer.writerows(rows)
+
+@app.route('/admin-dashboard', methods=['GET'])
+def admin_dashboard():
+    # Check for admin authentication
+    auth = request.authorization
+    if not auth or auth.username != ADMIN_USERNAME or auth.password != ADMIN_PASSWORD:
+        return Response(
+            'Access Denied: Invalid credentials',
+            401,
+            {'WWW-Authenticate': 'Basic realm="Admin Dashboard"'}
+        )
+    data = []
+    with file_lock:
+        with open(CSV_FILE, mode='r') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                data.append(row)
+
+    # Render the dashboard
+    return render_template('dashboard.html', data=data)
+
+@app.route('/download-csv', methods=['GET'])
+def download_csv():
+    # Check for admin authentication
+    auth = request.authorization
+    if not auth or auth.username != ADMIN_USERNAME or auth.password != ADMIN_PASSWORD:
+        return Response(
+            'Access Denied: Invalid credentials',
+            401,
+            {'WWW-Authenticate': 'Basic realm="Admin Dashboard"'}
+        )
+
+    # Serve the CSV file
+    return send_file(
+        CSV_FILE,
+        mimetype='text/csv',
+        as_attachment=True,
+        download_name='email_list.csv'
+    )
 
 
 if __name__ == '__main__':
