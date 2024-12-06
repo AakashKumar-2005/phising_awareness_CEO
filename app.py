@@ -15,16 +15,17 @@ file_lock = Lock()
 if not os.path.exists(CSV_FILE):
     with open(CSV_FILE, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['Email', 'Status'])  # Add headers: Email, Status
+        writer.writerow(['Email', 'Name', 'Status'])  # Add headers: Email, Name, Status
 
 
 # Route to track clicks
 @app.route('/track-click', methods=['GET'])
 def track_click():
     email = request.args.get('email')
+    name = request.args.get('name')
 
     if email:
-        update_csv(email, 'Seen the email and Opened it')
+        update_csv(email, 'Seen the email and Opened it', name)
         # Redirect to phishing awareness page
         response = redirect('https://aakashkumar-2005.github.io/phising_awareness_CEO/')
         response.headers['ngrok-skip-browser-warning'] = 'true'  # Skip ngrok browser warning
@@ -38,21 +39,18 @@ def track_click():
 @app.route('/track-view', methods=['GET'])
 def track_view():
     email = request.args.get('email')
+    name = request.args.get('name')
 
     if email:
-        update_csv(email, 'Seen the email and Not Opened it')
+        update_csv(email, 'Seen the email and Not Opened it', name)
         # Return a 1x1 transparent GIF
-        gif_data = (
-            b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00'
-            b'\x00\x00\x00\xFF\xFF\xFF\x21\xF9\x04\x01\x00\x00\x00'
-            b'\x00\x2C\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02'
-            b'\x4C\x01\x00\x3B'
-        )
+        gif_data = b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\xFF\xFF\xFF\x21\xF9\x04\x01\x00\x00\x00\x00\x2C\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x4C\x01\x00\x3B'
+
         return Response(gif_data, content_type='image/gif')
     return "Invalid Request: Missing email parameter", 400
 
 
-def update_csv(email, status):
+def update_csv(email, status, name=None):
     """
     Safely update the CSV file with the email status.
     """
@@ -66,17 +64,20 @@ def update_csv(email, status):
                 reader = csv.DictReader(file)
                 for row in reader:
                     if row['Email'] == email:
-                        row['Status'] = status  # Update status
+                        # Update status and keep the existing name if no new name is provided
+                        row['Status'] = status
+                        if name:
+                            row['Name'] = name
                         updated = True
                     rows.append(row)
 
         # If the email wasn't found, append a new row
         if not updated:
-            rows.append({'Email': email, 'Status': status})
+            rows.append({'Email': email, 'Name': name or '', 'Status': status})
 
         # Write back all rows to the CSV
         with open(CSV_FILE, mode='w', newline='') as file:
-            writer = csv.DictWriter(file, fieldnames=['Email', 'Status'])
+            writer = csv.DictWriter(file, fieldnames=['Email', 'Name', 'Status'])
             writer.writeheader()
             writer.writerows(rows)
 
