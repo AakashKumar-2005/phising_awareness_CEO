@@ -85,8 +85,9 @@ def admin_dashboard():
         return Response(
             'Access Denied: Invalid credentials',
             401,
-            {'WWW-Authenticate': 'Basic realm="Admin Dashboard"'})
-    
+            {'WWW-Authenticate': 'Basic realm="Admin Dashboard"'}
+        )
+
     # Read the data from CSV and count statuses
     data = []
     unseen_count = 0
