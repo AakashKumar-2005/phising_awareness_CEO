@@ -4,69 +4,53 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
-  <style>
-    /* Basic styles for the page */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background-color: #f4f4f4;
-    }
-
-    h1 {
-      text-align: center;
-    }
-
-    h2 {
-      margin-top: 30px;
-    }
-
-    /* Pie chart container */
-    .pie-chart-container {
-      position: relative;
-      width: 300px;
-      height: 300px;
-      margin: 0 auto;
-      border-radius: 50%;
-      background-image: conic-gradient;
-    }
-
-    /* Data table styles */
-    table {
-      width: 100%;
-      margin-top: 30px;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      padding: 8px 12px;
-      border: 1px solid #ddd;
-      text-align: center;
-    }
-
-    th {
-      background-color: #f2f2f2;
-    }
-
-    /* Filter form styles */
-    .filter-form {
-      text-align: center;
-      margin-top: 20px;
-    }
-  </style>
+  <!-- Google Charts Library -->
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
-
   <h1>Admin Dashboard</h1>
 
-  <!-- Pie Chart Container -->
-  <div class="pie-chart-container" id="piechart">
-    <!-- Dynamic pie chart will be rendered here -->
-  </div>
+  <!-- Pie Chart for Email Status -->
+  <div id="piechart" style="width: 400px; height: 400px;"></div>
 
-  <h2>Employee Data</h2>
+  <!-- Pass pie chart data using data-* attributes -->
+  <div id="pie-data"
+       data-labels="{{ pie_data.labels | join(',') }}"
+       data-values="{{ pie_data.data | join(',') }}"></div>
+
+  <script type="text/javascript">
+    // Load the Google Charts library
+    google.charts.load('current', { packages: ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      // Get the data from the div element using data-* attributes
+      var pieLabels = document.getElementById('pie-data').getAttribute('data-labels').split(',');
+      var pieData = document.getElementById('pie-data').getAttribute('data-values').split(',');
+
+      // Prepare the data in Google Charts format
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Status');
+      data.addColumn('number', 'Count');
+      for (let i = 0; i < pieLabels.length; i++) {
+        data.addRow([pieLabels[i], parseInt(pieData[i])]);
+      }
+
+      // Chart options
+      var options = {
+        title: 'Email Status',
+        colors: ['#ff0000', '#ffcc00', '#00ff00']
+      };
+
+      // Draw the pie chart
+      var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+      chart.draw(data, options);
+    }
+  </script>
+
   <!-- Table to Display Employee Data -->
-  <table>
+  <h2>Employee Data</h2>
+  <table border="1">
     <thead>
       <tr>
         <th>Email</th>
@@ -84,58 +68,5 @@
       {% endfor %}
     </tbody>
   </table>
-
-  <h3>Filter by Status</h3>
-  <div class="filter-form">
-    <form action="/filter" method="get">
-      <label for="status">Choose Status:</label>
-      <select name="status" id="status">
-        <option value="unseen">Unseen</option>
-        <option value="Seen the email">Seen</option>
-        <option value="Seen the email and Opened it">Opened</option>
-      </select>
-      <button type="submit">Filter</button>
-    </form>
-  </div>
-
-  <script>
-    // Data from Flask passed into JavaScript variables
-    var pieLabels = {{ pie_data.labels | tojson }};
-    var pieData = {{ pie_data.data | tojson }};
-    
-    // Function to draw the dynamic pie chart
-    function drawPieChart() {
-      var total = pieData.reduce((sum, value) => sum + value, 0);
-      var angleOffset = 0;
-
-      // Container where the pie chart will be rendered
-      var pieChart = document.getElementById('piechart');
-      pieChart.style.backgroundImage = '';  // Reset before drawing
-
-      // Loop over the pie data to create each segment
-      pieData.forEach(function (value, index) {
-        var angle = (value / total) * 360; // Calculate the angle for this segment
-        var color = getColorForSegment(index);
-
-        // Set the CSS for the pie chart
-        pieChart.style.backgroundImage += `${color} ${angleOffset}deg ${angle + angleOffset}deg,`;
-        angleOffset += angle;
-      });
-    }
-
-    // Function to return the color for each segment
-    function getColorForSegment(index) {
-      switch(index) {
-        case 0: return 'red';     // Unseen
-        case 1: return 'yellow';  // Seen
-        case 2: return 'green';   // Opened
-        default: return 'gray';   // Default color
-      }
-    }
-
-    // Call the function to draw the pie chart
-    drawPieChart();
-  </script>
-
 </body>
 </html>
