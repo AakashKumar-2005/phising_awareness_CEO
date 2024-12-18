@@ -77,7 +77,6 @@ def update_csv(email, status, name=None):
             writer.writeheader()
             writer.writerows(rows)
 
-
 @app.route('/admin-dashboard', methods=['GET'])
 def admin_dashboard():
     # Check for admin authentication
@@ -86,9 +85,8 @@ def admin_dashboard():
         return Response(
             'Access Denied: Invalid credentials',
             401,
-            {'WWW-Authenticate': 'Basic realm="Admin Dashboard"'}
-        )
-
+            {'WWW-Authenticate': 'Basic realm="Admin Dashboard"'})
+    
     # Read the data from CSV and count statuses
     data = []
     unseen_count = 0
@@ -114,6 +112,7 @@ def admin_dashboard():
 
     # Render the dashboard with the data and pie data
     return render_template('dashboard.html', data=data, pie_data=pie_data)
+
 
 
 @app.route('/filter', methods=['GET'])
