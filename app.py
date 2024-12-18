@@ -131,6 +131,18 @@ def download_csv():
         as_attachment=True,
         download_name='email_list.csv'
     )
+@app.route('/filter', methods=['GET'])
+def filter_data():
+    status = request.args.get('status')  # Get the status from the URL (Unseen, Seen, Opened)
+    filtered_data = []
+
+    with open(CSV_FILE, mode='r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            if row['Status'] == status:  # Filter employees by status
+                filtered_data.append(row)
+
+    return render_template('dashboard.html', data=filtered_data, pie_data={})
 
 
 if __name__ == '__main__':
