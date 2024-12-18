@@ -24,7 +24,7 @@
       height: 100vh;
       background: url('explosion-12681.gif') center/cover no-repeat;
       z-index: 1;
-      animation: changeBackground 3s ease-in forwards;
+      animation: changeBackground 2s ease-in forwards;
     }
 
     /* Background transition to fire GIF */
@@ -43,7 +43,7 @@
       top: 0;
       left: 50%;
       z-index: 2;
-      display: flex;
+      display: none; /* Initially hidden */
       flex-direction: column;
       justify-content: flex-start;
       align-items: center;
@@ -63,78 +63,42 @@
       font-size: 1.2rem;
       text-align: center;
       color: white;
-      opacity: 0; /* Initially hidden */
-      animation-timing-function: ease-in-out;
-      animation-fill-mode: forwards; /* Ensures the final state is preserved */
     }
 
-    /* Animations for Instructions */
     .instruction-0 {
-      animation: moveFromTopToCenterAndFadeOut 4s ease-in-out 3s forwards;
       border: 4px solid #030303;
       color: rgb(255, 255, 255);
       background-color: #044d13fa;
     }
 
     .instruction-1 {
-      animation: moveFromTopToCenter 2s ease-in-out 6s forwards;
       background: #bb5406;
       color: aliceblue;
     }
 
     .instruction-2 {
-      animation: moveFromTopToCenter 2s ease-in-out 7s forwards;
-      background:#bb5406;
+      background: #bb5406;
       color: aliceblue;
     }
 
     .instruction-3 {
-      animation: moveFromTopToCenter 2s ease-in-out 8s forwards;
       background: #bb5406;
       color: aliceblue;
     }
 
     .instruction-4 {
-      animation: moveFromTopToCenter 2s ease-in-out 9s forwards;
       background: #bb5406;
       color: aliceblue;
     }
-
-    /* Move from top to center and fade in */
-    @keyframes moveFromTopToCenter {
-      0% {
-        transform: translateY(-50px); /* Start above the screen */
-        opacity: 0;
-      }
-      50% {
-        transform: translateY(0); /* Move to center */
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(0); /* Stay in center */
-        opacity: 1;
-      }
-    }
-
-    /* Move from top to center and fade out */
-    @keyframes moveFromTopToCenterAndFadeOut {
-      0% {
-        transform: translateY(-50px); /* Start above the screen */
-        opacity: 0;
-      }
-      50% {
-        transform: translateY(0); /* Move to center */
-        opacity: 1;
-      }
-      80% {
-        opacity: 1; /* Stay visible for a while */
-      }
-      100% {
-        transform: translateY(0); /* Stay in center */
-        opacity: 0; /* Fade out */
-      }
-    }
   </style>
+  <script>
+    // Show content after 2 seconds
+    window.onload = function() {
+      setTimeout(() => {
+        document.querySelector('.content').style.display = 'flex';
+      }, 2000);
+    };
+  </script>
 </head>
 <body>
   <!-- Bomb Reveal GIF -->
