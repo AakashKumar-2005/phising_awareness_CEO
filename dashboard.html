@@ -12,7 +12,8 @@
   <!-- Pie Chart for email status -->
   <canvas id="statusPieChart" width="400" height="400"></canvas>
   <script>
-    var pieData = {{ pie_data | tojson }};  // Pie chart data from Flask
+    var pieData = (pie_data | tojson); 
+    console.log(pieData); // Pie chart data from Flask
 
     var ctx = document.getElementById('statusPieChart').getContext('2d');
     var statusPieChart = new Chart(ctx, {
