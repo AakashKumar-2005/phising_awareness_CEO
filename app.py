@@ -22,28 +22,36 @@ if not os.path.exists(CSV_FILE):
         writer.writerow(['Email', 'Name', 'Status'])  # Add headers: Email, Name, Status
 
 
-# Route to track both views and clicks
-@app.route('/track', methods=['GET'])
-def track():
+# Route to track clicks
+@app.route('/track-click', methods=['GET'])
+def track_click():
     email = request.args.get('email')
     name = request.args.get('name')
-    action = request.args.get('action')
 
-    if email and action:
-        if action == 'open':  # User clicked and opened the email
-            update_csv(email, 'Seen the email and Opened it', name)
-            # Redirect to phishing awareness page
-            response = redirect('https://aakashkumar-2005.github.io/phising_awareness_CEO/')
-            response.headers['ngrok-skip-browser-warning'] = 'true'  # Skip ngrok browser warning
-            response.headers['User-Agent'] = 'CustomUserAgent/1.0'   # Custom User-Agent
-            response.headers['Cache-Control'] = 'no-store'          # Prevent caching
-            return response
-        elif action == 'view':  # User only viewed the email
-            update_csv(email, 'Seen the email', name)
-            return Response(status=204)  # No content response as it is just a view
-        else:
-            return "Invalid action", 400
-    return "Invalid Request: Missing email or action parameter", 400
+    if email:
+        update_csv(email, 'Seen the email and Opened it', name)
+        # Redirect to phishing awareness page
+        response = redirect('https://aakashkumar-2005.github.io/phising_awareness_CEO/')
+        response.headers['ngrok-skip-browser-warning'] = 'true'  # Skip ngrok browser warning
+        response.headers['User-Agent'] = 'CustomUserAgent/1.0'   # Custom User-Agent
+        response.headers['Cache-Control'] = 'no-store'          # Prevent caching
+        return response
+    return "Invalid Request: Missing email parameter", 400
+
+
+# Route to track "Seen but Not Opened" (using tracking pixel)
+@app.route('/track-view', methods=['GET'])
+def track_view():
+    email = request.args.get('email')
+    name = request.args.get('name')
+
+    if email:
+        update_csv(email, 'Seen the email and Not Opened it', name)
+        # Return a 1x1 transparent GIF
+        gif_data = b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\xFF\xFF\xFF\x21\xF9\x04\x01\x00\x00\x00\x00\x2C\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x4C\x01\x00\x3B'
+
+        return Response(gif_data, content_type='image/gif')
+    return "Invalid Request: Missing email parameter", 400
 
 
 def update_csv(email, status, name=None):
@@ -76,7 +84,7 @@ def update_csv(email, status, name=None):
             writer = csv.DictWriter(file, fieldnames=['Email', 'Name', 'Status'])
             writer.writeheader()
             writer.writerows(rows)
-            
+
 @app.route('/admin-dashboard', methods=['GET'])
 def admin_dashboard():
     # Check for admin authentication
@@ -87,62 +95,15 @@ def admin_dashboard():
             401,
             {'WWW-Authenticate': 'Basic realm="Admin Dashboard"'}
         )
-
-    # Read the data from CSV and count statuses
     data = []
-    unseen_count = 0
-    seen_count = 0
-    opened_count = 0
+    with file_lock:
+        with open(CSV_FILE, mode='r') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                data.append(row)
 
-    with open(CSV_FILE, mode='r') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            data.append(row)
-            if row['Status'] == 'unseen':
-                unseen_count += 1
-            elif row['Status'] == 'Seen the email':
-                seen_count += 1
-            elif row['Status'] == 'Seen the email and Opened it':
-                opened_count += 1
-
-    # Send the counts to frontend as pie data
-    pie_data = {
-        'labels': ['Unseen', 'Seen', 'Opened'],
-        'data': [unseen_count, seen_count, opened_count]
-    }
-
-    # Render the dashboard with the data and pie data
-    return render_template('dashboard.html', data=data, pie_data=pie_data)
-
-
-@app.route('/filter', methods=['GET'])
-def filter_data():
-    status = request.args.get('status')  # Get the status from the URL (Unseen, Seen, Opened)
-    filtered_data = []
-    unseen_count = 0
-    seen_count = 0
-    opened_count = 0
-
-    with open(CSV_FILE, mode='r') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            if row['Status'] == status:  # Filter employees by status
-                filtered_data.append(row)
-                if row['Status'] == 'unseen':
-                    unseen_count += 1
-                elif row['Status'] == 'Seen the email':
-                    seen_count += 1
-                elif row['Status'] == 'Seen the email and Opened it':
-                    opened_count += 1
-
-    # Send the filtered data and updated pie data to frontend
-    pie_data = {
-        'labels': ['Unseen', 'Seen', 'Opened'],
-        'data': [unseen_count, seen_count, opened_count]
-    }
-
-    return render_template('dashboard.html', data=filtered_data, pie_data=pie_data)
-
+    # Render the dashboard
+    return render_template('dashboard.html', data=data)
 
 @app.route('/download-csv', methods=['GET'])
 def download_csv():
