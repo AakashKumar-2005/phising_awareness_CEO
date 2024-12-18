@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>Admin Dashboard</h1>
+
+  <!-- Pie Chart for email status -->
+  <canvas id="statusPieChart" width="400" height="400"></canvas>
+  <script>
+    var pieData = {{ pie_data | tojson }};  // Pie chart data from Flask
+
+    var ctx = document.getElementById('statusPieChart').getContext('2d');
+    var statusPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: pieData.labels,  // Labels (Unseen, Seen, Opened)
+            datasets: [{
+                data: pieData.data,  // Data (counts for each category)
+                backgroundColor: ['#ff0000', '#ffcc00', '#00ff00'],  // Colors for each section
+            }]
+        },
+        options: {
+            onClick: function(event, elements) {
+                if (elements.length > 0) {
+                    var index = elements[0]._index;
+                    var status = pieData.labels[index];  // Get the clicked category
+                    window.location.href = "/filter?status=" + status;  // Redirect to filter route
+                }
+            }
+        }
+    });
+  </script>
+
+  <!-- Table to display filtered employee data -->
+  <h2>Employee Data</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Name</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in data %}
+        <tr>
+          <td>{{ row['Email'] }}</td>
+          <td>{{ row['Name'] }}</td>
+          <td>{{ row['Status'] }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>
