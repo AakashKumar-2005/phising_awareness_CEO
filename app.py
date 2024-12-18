@@ -87,23 +87,31 @@ def update_csv(email, status, name=None):
 
 @app.route('/admin-dashboard', methods=['GET'])
 def admin_dashboard():
-    # Check for admin authentication
-    auth = request.authorization
-    if not auth or auth.username != ADMIN_USERNAME or auth.password != ADMIN_PASSWORD:
-        return Response(
-            'Access Denied: Invalid credentials',
-            401,
-            {'WWW-Authenticate': 'Basic realm="Admin Dashboard"'}
-        )
+    # Read the data from CSV and count statuses
     data = []
-    with file_lock:
-        with open(CSV_FILE, mode='r') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                data.append(row)
+    unseen_count = 0
+    seen_count = 0
+    opened_count = 0
 
-    # Render the dashboard
-    return render_template('dashboard.html', data=data)
+    with open(CSV_FILE, mode='r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            data.append(row)
+            if row['Status'] == 'unseen':
+                unseen_count += 1
+            elif row['Status'] == 'Seen the email':
+                seen_count += 1
+            elif row['Status'] == 'Seen the email and Opened it':
+                opened_count += 1
+
+    # Send the counts to frontend as pie data
+    pie_data = {
+        'labels': ['Unseen', 'Seen', 'Opened'],
+        'data': [unseen_count, seen_count, opened_count]
+    }
+
+    return render_template('dashboard.html', data=data, pie_data=pie_data)
+
 
 @app.route('/download-csv', methods=['GET'])
 def download_csv():
