@@ -113,8 +113,6 @@ def admin_dashboard():
     # Render the dashboard with the data and pie data
     return render_template('dashboard.html', data=data, pie_data=pie_data)
 
-
-
 @app.route('/filter', methods=['GET'])
 def filter_data():
     status = request.args.get('status')  # Get the status from the URL (Unseen, Seen, Opened)
